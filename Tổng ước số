@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    int a,b,i,j,dem=0;
+    cin>>a>>b;
+    vector<long>v(b+5,1);
+    for(int i=2;i<=b;i++)
+    {
+        for(j=i;j<=b;j+=i)
+        {
+            v[j]+=i;
+        }
+    }
+    for(i=a;i<=b;i++) dem+=(v[i]-i>i);
+    cout<<dem;
+}
