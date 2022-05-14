@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+int V,E,u,v;
+vector<pair<int,int>>G;
+void solve() 
+{
+    cin>>V>>E;
+    G.clear(); 
+	G.resize(V+1);
+    while(E--) 
+	{
+        cin>>u>>v;
+        G[u].first++;
+        G[v].second++;
+    }
+    for(int i=1;i<=V;i++) 
+	{
+        if(G[i].first!=G[i].second) 
+		{
+            cout<<0<<endl;
+            return;
+        }
+    }
+    cout<<1<<endl;
+}
+int main() 
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); 
+	cout.tie(0);
+    int t; 
+	cin>>t;
+    while(t--) 
+	{
+        solve();
+    }
+    return 0;
+}
