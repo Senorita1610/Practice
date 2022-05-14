@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() 
+{
+    int t,n,i; 
+	cin>>t;
+    while(t--)
+    {
+    	cin>>n;
+    	vector<int>a(n),b(n);
+    	for(int &x:a)
+    	{
+    		cin>>x;
+		}
+		stack<int>stk;
+		for(i=0;i<n;i++)
+		{
+			while(!stk.empty()&&a[stk.top()]<=a[i]) stk.pop();
+			if(stk.empty()) b[i]=0;
+			else b[i]=stk.top()+1;
+			stk.push(i);
+		}
+		for(i=0;i<n;i++) cout<<i-b[i]+1<<" ";
+		cout<<endl;
+    }
+    return 0;
+}
