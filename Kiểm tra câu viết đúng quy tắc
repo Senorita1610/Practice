@@ -1,0 +1,48 @@
+#include<stack>
+#include<iostream>
+#include<string>
+using namespace std;
+int main()
+{
+	int i,flag=0;
+	char ch;
+	string a;
+	int t;
+	cin>>t;
+	cin.ignore();
+	while(t--)
+	{
+		getline(cin,a);
+		stack<char>ans;
+		flag=0;
+		int x=0;
+		if(a[0]=='.') break;
+		for(i=0;a[i]!='\0';i++)
+		{
+			if(a[i]=='('||a[i]=='[')
+			{
+				ans.push(a[i]);
+			}
+			else if(a[i]==')')
+			{
+				if(!ans.empty()&&ans.top()=='(')
+				{
+					ans.pop();
+				}
+				else x=1;
+			}
+			else if(a[i]==']')
+			{
+				if(!ans.empty()&&ans.top()=='[')
+				{
+					ans.pop();
+				}
+				else x=1;
+			}
+			if(x) break;
+		}
+		if(ans.size()==0&&x==0) printf("YES\n");
+		else printf("NO\n");
+	}
+	return 0;
+}
