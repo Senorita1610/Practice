@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN=100009;
+char s[MAXN];
+stack<int>st;
+bool vis[MAXN];
+int main()
+{
+	scanf("%s",s);
+	memset(vis,0,sizeof(vis));
+	int len=strlen(s);
+	for(int i=0;i<len;i++) 
+	{
+		if(s[i]=='('||s[i]=='[') st.push(i);
+		else 
+		{
+			if(st.empty()) continue;
+			if((s[st.top()]=='('&&s[i]==')')||(s[st.top()]=='['&&s[i]==']')) 
+			{
+				vis[i]=1;
+				vis[st.top()]=1;
+				st.pop();
+			}
+			else 
+			{
+				while(!st.empty()) st.pop();
+			}
+		}
+	}
+	int ans=0,lef,rig;
+	for(int i=0;i<len;i++) 
+	{
+		if(!vis[i]) continue;
+		int j=i,tmp=0;
+		while(j<len&&vis[j]) 
+		{
+			if(s[j]=='[') tmp++;
+			if(tmp>=ans)
+			{
+				ans=tmp;
+				lef=i;
+				rig=j;
+			}
+			++j;
+		}
+		i=j-1;
+	}
+	printf("%d\n",ans);
+	/*
+	if(ans)
+	{
+		for(int i=lef;i<=rig;i++) putchar(s[i]);
+		puts("");
+	}
+	return !true && !false;
+  CODEFORCES 224C
+	*/
+}
