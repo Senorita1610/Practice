@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() 
+{
+    int t,i;
+	cin>>t; 
+	cin.ignore();
+    while(t--) 
+	{
+        string s; 
+		getline(cin,s);
+		int idx=0;
+    	stack<int>stk;
+    	vector<int>v;
+    	for(i=0;i<s.size();i++) 
+		{
+        	if(s[i]=='(') 
+			{
+            	idx++;
+            	stk.push(idx);
+            	v.push_back(idx);
+        	} 
+			else if(s[i]==')') 
+			{
+            	v.push_back(stk.top());
+            	stk.pop();
+        	}
+    	}
+    	for(i=0;i<v.size();i++) cout<<v[i]<<" ";
+        cout<<endl;
+    }
+    return 0;
+}
