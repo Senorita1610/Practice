@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+int v,e,u;
+vector<int>g[1005];
+bool visited[1005];
+void bfs(int v)
+{
+	queue<int>q;
+	q.push(v);
+	visited[v]=true;
+	while(!q.empty())
+	{
+		int x=q.front();
+		q.pop();
+		for(auto c:g[x])
+		{
+			if(!visited[c])
+			{
+				q.push(c);
+				visited[c]=true;
+			}
+		}
+	}
+}
+int main()
+{
+	cin>>v>>e>>u;
+	while(e--)
+	{
+		int x,y;
+		cin>>x>>y;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+	memset(visited,false,sizeof(visited));
+	bfs(u);
+	for(int i=1;i<=v;i++)
+	{
+		if(!visited[i])
+		{
+			cout<<i<<endl;
+		}
+	}
+	return 0;
+}
