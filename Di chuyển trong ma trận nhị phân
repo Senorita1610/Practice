@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n;
+int a[105][105];
+string dp[105][105];
+void convert(string str)
+{
+    while(str.size()%4!=0) str="0"+str;
+    string ans="";
+    for(int i=0;i<str.size();i+=4)
+    {
+        int d=0;
+        for(int j=0;j<=3;j++)
+        {
+            if(str[i+3-j]=='1') d+=1<<j;
+        }
+        if(d<=9) ans+=to_string(d);
+        else ans+="A"+d-10;
+    }
+    cout<<ans<<endl;
+}
+int main()
+{
+    cin>>n;
+    for(int i=1;i<=n;i++)
+    {
+    	for(int j=1;j<=n;j++)
+    	{
+    		cin>>a[i][j];
+		}
+	}
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=1;j<=n;j++)
+		{
+			dp[i][j]="";
+			if(i==1&&j==1) dp[i][j]=to_string(a[i][j]);
+			else if(i==1) dp[i][j]=dp[i][j-1]+to_string(a[i][j]);
+			else if(j==1) dp[i][j]=dp[i-1][j]+to_string(a[i][j]);
+			else dp[i][j]=max(dp[i][j-1],dp[i-1][j])+to_string(a[i][j]);
+		}
+	}
+	convert(dp[n][n]);
+    return 0;
+}
