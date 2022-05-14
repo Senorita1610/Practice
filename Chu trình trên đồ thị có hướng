@@ -17,11 +17,11 @@ void solve()
 	{
         if(G[i].first!=G[i].second) 
 		{
-            cout<<0<<endl;
+            cout<<"NO"<<endl;
             return;
         }
     }
-    cout<<1<<endl;
+    cout<<"YES"<<endl;
 }
 int main() 
 {
