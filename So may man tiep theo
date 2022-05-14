@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+int l,r;
+vector<long long>v;
+void rec(string s)
+{
+	if(s!="")
+	{
+		stringstream ss;
+		ss<<s;
+		long long x;
+		ss>>x;
+		v.push_back(x);
+		if(x>=r)
+		{
+			return;
+		}
+	}
+	rec(s+"7");
+	rec(s+"4");
+}
+int main()
+{
+	cin>>l>>r;
+	rec("");
+	sort(v.begin(),v.end());
+	int start=lower_bound(v.begin(),v.end(),l)-v.begin();
+	while(1)
+	{
+		if(v[start]>r)
+		{
+			ans+=(r-l+1)*v[start];
+			break;
+		}
+		else
+		{
+			ans+=(v[start]-l+1)*v[start];
+		}
+		l=v[start]+1;
+		start++;
+	}
+	cout<<ans;
+}
