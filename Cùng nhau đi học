@@ -1,137 +1,131 @@
-program FriendShip;
-const
-  InputFile  = 'FRIEND.INP';
-  OutputFile = 'FRIEND.OUT';
-  max = 100;
-  maxC = 1001;
-  maxT = max * maxC;
-type
-  TLab = array[1..max] of LongInt;
-  TTrace = array[1..max] of Integer;
-var
-  c: array[1..max, 1..max] of Integer;
-  s1, f1, s2, f2, n, m: Integer;
-  d, d1, d2, d3, d4: TLab;
-  Trace: TTrace;
-  Path: array[1..max] of Integer;
-  nPath: Integer;
-  TM, Time1, Time2: LongInt;
-  Position: Integer;
-
-procedure Enter;
-var
-  f: Text;
-  i, u, v: Integer;
-begin
-  Assign(f, InputFile); Reset(f);
-  Readln(f, n, m);
-  Readln(f, s1, f1, s2, f2);
-  for u := 1 to n do
-    for v := 1 to n do c[u, v] := maxC;
-  for i := 1 to m do
-    begin
-      Readln(f, u, v, c[u, v]);
-      c[v, u] := c[u, v];
-    end;
-  Close(f);
-end;
-
-procedure Dijkstra(Start: Integer; var d: TLab);
-var
-  p, v: Integer;
-  min: LongInt;
-  Free: array[1..max] of Boolean;
-begin
-  for v := 1 to n do d[v] := maxT;
-  FillChar(Free, SizeOf(Free), True);
-  d[Start] := 0;
-  repeat
-    p := 0; min := maxT;
-    for v := 1 to n do
-      if Free[v] and (d[v] < min) then
-        begin
-          p := v;
-          min := d[v];
-        end;
-    if p = 0 then Exit;
-    Free[p] := False;
-    for v := 1 to n do
-      if Free[v] and (c[p, v] <> maxC) and (d[v] > d[p] + c[p, v]) then
-        begin
-          d[v] := d[p] + c[p, v];
-          Trace[v] := p;
-        end;
-  until False;
-end;
-
-procedure Solve;
-var
-  u: Integer;
-begin
-  Dijkstra(s1, d1);
-  Dijkstra(s2, d2);
-  Dijkstra(f1, d3);
-  Dijkstra(f2, d4);
-  Time1 := d1[f1]; Time2 := d2[f2];
-  TM := maxT; Position := 0;
-  for u := 1 to n do
-    if (d1[u] + d3[u] = Time1) and (d2[u] + d4[u] = Time2) and
-       (d1[u] = d2[u]) and (d1[u] < TM) then
-         begin
-           TM := d1[u];
-           Position := u;
-         end;
-  if Position <> 0 then Dijkstra(Position, d);
-end;
-
-procedure result;
-var
-  f: Text;
-  t, i, step: Integer;
-begin
-  Assign(f, OutputFile); Rewrite(f);
-  if Position = 0 then Writeln(f, 'NO')
-  else
-    begin
-      Writeln(f, 'YES');
-      for step := 1 to 2 do
-        begin
-          Writeln(f, Time1);
-          t := s1;
-          while t <> Position do
-            begin
-              Write(f, t, ' ');
-              t := Trace[t];
-            end;
-          Write(f, Position, ' ');
-          nPath := 0;
-          t := f1;
-          while t <> Position do
-            begin
-              Inc(nPath); Path[nPath] := t;
-              t := Trace[t];
-            end;
-          for i := nPath downto 1 do Write(f, Path[i], ' ');
-          Writeln(f);
-          Time1 := Time2; s1 := s2; f1:= f2;
-        end;
-      Writeln(f, Position);
-      Writeln(f, TM);
-    end;
-  Close(f);
-end;
-
-begin
-  Enter;
-  Solve;
-  Result;
-end.
-6 7
-1 6 2 5
-1 3 10
-1 4 10
-2 3 5
-3 4 5
-3 6 15
-4 5 20
-4 6 15
+#include<bits/stdc++.h>
+using namespace std;
+const int MAX=100;
+const int MAXC=1001;
+const int MAXT=100100;
+long long TLab[MAX];
+int TTrace[MAX];
+int c[MAX][MAX];
+int s1,f1,s2,f2,n,m;
+long long d[MAX],d1[MAX],d2[MAX],d3[MAX],d4[MAX];
+int Trace[MAX];
+int Path[MAX];
+int nPath;
+long long TM,Time1,Time2;
+int Position;
+void Dijkstra(int Start,long long d[MAX])
+{
+	int p,v;
+	long long MIN;
+	bool Free[MAX];
+	for(int v=1;v<=n;v++)
+	{
+		d[v]=MAXT;
+	}
+	memset(Free,true,sizeof(Free));
+	d[Start]=0;
+	while(1)
+	{
+		p=0;
+		MIN=MAXT;
+		for(int v=1;v<=n;v++)
+		{
+			if(Free[v]&&d[v]<MIN)
+			{
+				p=v;
+				MIN=d[v];
+			}
+		}
+		if(p==0) break;
+		Free[p]=false;
+		for(int v=1;v<=n;v++)
+		{
+			if(Free[v]&&(c[p][v]!=MAXC)&&(d[v]>d[p]+c[p][v]))
+			{
+				d[v]=d[p]+c[p][v];
+				Trace[v]=p;
+			}
+		}
+	}
+}
+void solve()
+{
+	int u;
+	Dijkstra(s1,d1);
+	Dijkstra(s2,d2);
+	Dijkstra(f1,d3);
+	Dijkstra(f2,d4);
+	Time1=d1[f1];
+	Time2=d2[f2];
+	TM=MAXT;
+	Position=0;
+	for(int u=1;u<=n;u++)
+	{
+		if((d1[u]+d3[u]==Time1)&&(d2[u]+d4[u]==Time2)&&(d1[u]==d2[u])&&(d1[u]<TM))
+		{
+			TM=d1[u];
+			Position=u;
+		}
+	}
+	if(Position!=0) Dijkstra(Position,d);
+}
+void result()
+{
+	int t,i,step;
+	if(Position==0){
+		cout<<"NO"<<endl;
+	}
+	else
+	{
+		cout<<"YES"<<endl;
+		for(step=1;step<=2;step++)
+		{
+			cout<<Time1<<endl;
+			t=s1;
+			while(t!=Position)
+			{
+				cout<<t<<" ";
+				t=Trace[t];
+			}
+			cout<<Position<<" ";
+			nPath=0;
+			t=f1;
+			while(t!=Position)
+			{
+				nPath+=1;
+				Path[nPath]=t;
+				t=Trace[t];
+			}
+			for(int i=nPath;i>=1;i--)
+			{
+				cout<<Path[i]<<" ";
+			}
+			cout<<endl;
+			Time1=Time2;
+			s1=s2;
+			f1=f2;
+		}
+		cout<<Position<<endl;
+		cout<<TM<<endl;
+	}
+}
+int main()
+{
+	int u,v,x;
+	cin>>n>>m;
+	cin>>s1>>f1>>s2>>f2;
+	for(int u=1;u<=n;u++)
+	{
+		for(int v=1;v<=n;v++)
+		{
+			c[u][v]=MAXC;
+		}
+	}
+	for(int i=1;i<=m;i++)
+	{
+		cin>>u>>v>>x;
+		c[u][v]=c[v][u]=x;
+	}
+	solve();
+	result();
+}
