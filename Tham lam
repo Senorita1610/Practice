@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define FOR(i,a,b) for(int i=a;i<b;i++)
+#define size 30
+int xuat_phat;
+typedef struct{ 
+	long long dodai;
+	int dau,cuoi;
+	int da_dung;   // canh da xet hay chua
+}canh;
+int find_nearest_neighbor(canh a[][size], int n, int i){   // Tim dinh gan nhat voi dinh i
+	int nearest_neighbor=0;
+	int j;
+	long long do_dai_nn=8e+18;  // Do dai canh nho nhat tim duoc
+	FOR(j,0,n){
+		if(i != j && !a[i][j].da_dung && a[i][j].dodai<do_dai_nn){
+			do_dai_nn = a[i][j].dodai;  // Canh nho nhat la canh (i,j) 
+			nearest_neighbor=j;         // Dinh gan i nhat la dinh j
+		}
+	} 
+	return nearest_neighbor;            // Tra ve dinh j tim duoc 
+}
+int co_chu_trinh(canh PA[],int k, int ke_tiep){  // Kiem tra xem them dinh ke_tiep co tao chu trinh khong
+	int i=0, co_CT=0; 
+	while (i<k && !co_CT)                        // k la so dinh trong phuong an(duong di) da tim duoc
+		if(ke_tiep == PA[i].dau) co_CT=1;  // Neu dinh ke tiep trung voi dinh dau cua canh trong PA => tao CT
+		else i++;
+	return co_CT;
+}
+void greedy(canh a[][size], int n, int truoc, canh PA[]){ 
+	// truoc la dinh xuat phat de tim canh tiep theo
+	// PA luu tru phuong an tim duoc
+	int dau_tien = truoc, ke_tiep, k=0; // ghi lai dinh dau tien cua CT
+	// k la so canh cua PA
+	// Lap lai n-1 lan de tim duong di tu dinh dau toi dinh cuoi
+	while(k<n-1){
+		ke_tiep = find_nearest_neighbor(a,n,truoc);  // ke_tiep la dinh gan nhat voi dinh truoc
+		a[truoc][ke_tiep].da_dung = a[ke_tiep][truoc].da_dung = 1;   // danh dau canh (truoc,ke_tiep) la da xet
+		if (!co_chu_trinh(PA,k,ke_tiep)){  
+			// neu dua dinh ke_tiep vao PA khong tao CT => them canh  (truoc,ke_tiep) vao PA
+			PA[k]=a[truoc][ke_tiep];
+			truoc=ke_tiep;  // doi moi dinh xuat phat de tim canh tiep theo 
+			k++;
+		}
+	}
+	PA[n-1] = a[ke_tiep][dau_tien]; // noi dinh cuoi cung voi dinh dau tien de tao thanh CT
+}
+void in(canh PA[], int n){
+	long long sum=0;
+	cout<<"Duong di ngan nhat: "<<PA[0].dau+1;
+	FOR(i,0,n) {
+		cout<<" --> "<<PA[i].cuoi+1;
+               sum+=PA[i].dodai;
+	}	
+	cout<<endl;
+	cout<<"Chi phi: "<<sum;
+}
+int main(){
+	ifstream fpi("TSP.txt");
+	canh a[size][size];  // mang 2 chieu dau vao
+	int n; 
+	fpi>>n;
+	FOR(i,0,n){
+		FOR(j,0,n){
+			fpi>>a[i][j].dodai;
+			a[i][j].dau=i;
+			a[i][j].cuoi=j;
+			a[i][j].da_dung=0;
+		}
+	}
+	cout<<"Dinh xuat phat (Tu 1 den "<<n<<"): ";
+	int xuat_phat;	cin>>xuat_phat;	
+	xuat_phat--;
+	canh PA[n];
+	greedy(a,n,xuat_phat,PA);  // tim chu trinh bat dau tu dinh xuat_phat
+	in(PA,n);                  // in phuong an tim duoc
+}
+
