@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,a[20][20],check[20],FinalCost=0,TheLastPath[20],b[20],First;
+// n la so dinh
+// a[][] chi phi khi di chuyen giua cac dinh
+// check[] danh dau khi da den
+// TheLastPath[] luu ket qua cuoi cung
+// b[] luu ket qua trong cac truong hop
+// First dinh xuat phat va ket thuc
+void in()
+{ 
+// in ra tat ca truong hop 
+	cout<<First<<"-->";
+	for(int i=1;i<=n-1;i++) cout<<b[i]<<"-->";
+	cout<<First<<endl;
+	int TheCost=0;
+	for(int i=1;i<=n-2;i++) TheCost+=a[b[i]][b[i+1]];
+	TheCost+=a[b[n-1]][First];
+	TheCost+=a[First][b[1]];
+	cout<<"Chi phi: "<<TheCost<<endl;
+}
+void Try(int i,int sum,int dem)
+{
+// quay lui tu thanh pho i de di den cac thanh pho 
+	for(int j=1;j<=n;j++)
+	{
+	    if(!check[j])
+		{ 
+			// kiem tra xem di den do chua
+	        b[dem]=j;
+	        check[j]=1;
+	        sum+=a[i][j];
+	        if(dem==n-1)
+			{ 
+				// khi da di du so thanh pho
+	            in();
+	            if(!FinalCost)
+				{ 
+	                FinalCost=sum+a[j][First]; //chi phi o thanh pho cuoi cung den thanh pho 1
+	                for(int k=1;k<=n-1;k++) TheLastPath[k]=b[k];
+	            }
+	            else
+				{
+	                if(FinalCost>sum+a[j][First])
+					{
+						// neu chi phi nho hon thi cap nhat lai
+	                    for(int k=1;k<=n-1;k++) TheLastPath[k]=b[k];
+	                    FinalCost=sum+a[j][First];               
+					}
+	            }
+	        }
+	        else Try(j,sum,dem+1);
+	        // tiep tuc quay lui o thanh pho j
+	        check[j]=0;
+	        sum-=a[i][j];
+	        cout<<i<<" "<<j<<" "<<sum<<endl;
+	    }
+	}	
+}
+int main()
+{
+	ios_base::sync_with_stdio(0); 
+	cin.tie(NULL); 
+	cout.tie(NULL);
+	freopen("nhanhcan.IN","r",stdin);
+    cin>>n>>First;	   
+	for(int i=1;i<=n;i++) for(int j=1;j<=n;j++) cin>>a[i][j]; // nhap chi phi di chuyen
+	check[20]={0};
+	check[First]=1;
+	Try(First,0,1);
+	cout<<"Ket qua bai toan: "; 
+	cout<<First<<"-->";
+	for(int i=1;i<=n-1;i++) cout<<TheLastPath[i]<<"-->";
+	cout<<First<<endl;
+	cout<<"Tong chi phi la: "<<FinalCost<<endl;
+}
