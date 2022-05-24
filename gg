@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+#include<unistd.h>
+using namespace std;
+bool chuaxet[100];
+int n, k;
+long long c[20][20];
+long long x[100];
+long long TGT;
+long long MIN, cmin = 10000000;
+long long LastAns[100];
+string tp[100];
+
+void in(){
+    cout << "Duong di : " << endl;
+    for(int i = 1;i <= n; i++) cout << tp[LastAns[i]] << " --> ";
+    cout << tp[k] << endl;
+    cout<< "chi phi nho nhat: " << MIN << endl;
+}
+void nhap(){
+	cout << "Xin moi nhap SO LUONG THANH PHO : ";
+    cin >> n;
+    cout << "\nXin moi nhap DANH SACH TEN TP :\n";
+    for (int i = 1; i <= n; i++){
+    	cout << i << ".";
+    	scanf ("\n");
+    	getline(cin, tp[i]);
+	}
+	cout << "Moi ban nhap MA TRAN CHI PHI : \n";
+    for(int i = 1; i <= n; i++){
+        for(int j = 1; j <= n; j++){
+            cin >> c[i][j];
+            if (c[i][j] != 0) cmin = min(cmin, c[i][j]);
+        }
+    }
+}
+
+void Try(int i){
+    if(TGT + cmin * (n - (i - 1)) >= MIN)
+        return;
+    for(int j = 1; j <= n; j++){
+        if(chuaxet[j]){
+            x[i] = j;
+            chuaxet[j] = false;
+            TGT += c[x[i - 1]][j];
+            if(i == n){
+                if(TGT + c[x[n]][k] < MIN){
+                    MIN = TGT + c[x[n]][k];
+                    memcpy(LastAns, x, sizeof(x));
+                }
+            }
+            else Try(i + 1);
+            TGT -= c[x[i - 1]][j];
+            chuaxet[j] = true;
+        }
+    }
+}
+
+main(){
+    nhap();
+    while (true){
+    	MIN = 999999999; TGT = 0;
+    	string token;
+    	cout << "Xin moi quy khach nhap thanh pho bat dau : ";
+    	scanf("\n"); getline(cin, token);
+		for (int i = 1; i <= n; i++) if (token == tp[i]) k = i;
+    	memset(chuaxet,true,sizeof(chuaxet));
+        chuaxet[k] = false;
+        x[1] = k;
+        Try(2);
+        in();
+        sleep(15);
+	}
+    return EXIT_SUCCESS;
+}
+//0 3 4 2 7
+//3 0 4 6 3
+//4 4 0 5 8
+//2 6 5 0 6
+//7 3 8 6 0
