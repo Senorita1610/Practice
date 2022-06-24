@@ -1,61 +1,43 @@
 #include<bits/stdc++.h>
 using namespace std;
-const int N=1e3+5;
-int n,m,cnt,sotp,mx;
+const int N=1e2+5;
+int n,m;
 vector<int>List[N];
-int low[N],num[N];
-int parent[N],add[N],sc[N],check[N];
-void tarjan(int u)
+bool vis[N];
+void BFS(int u)
 {
-    low[u]=num[u]=++cnt;
-    for(auto x:List[u])
+    queue<int>q;
+    q.push(u);
+    vis[u]=1;
+    while(!q.empty())
     {
-        if(x==parent[u]) continue;
-        if(num[x]) low[u]=min(low[u],num[x]);
-        else
+        u=q.front();
+        q.pop();
+        for(auto x:List[u])
         {
-        	++sc[u];
-            parent[x]=u;
-            tarjan(x);
-            low[u]=min(low[u],low[x]);
+            if(!vis[x])
+            {
+                vis[x]=1;
+                q.push(x);
+            }
         }
     }
 }
-vector<pair<int,int>>tmp;
-int child[N];
-void solve()
+int solve(int u)
 {
+    memset(vis,0,sizeof(vis));
+    int cnt=0;
+    vis[u]=1;
     for(int i=1;i<=n;i++)
     {
-        int u=parent[i];
-        child[u]++;
+        if(!vis[i]) BFS(i),cnt++;
     }
-    for(int i=1;i<=n;i++)
-    {
-        int u=parent[i];
-        if(u&&parent[u]&&low[i]>=num[u]) check[u]=1,++add[u];
-    }
-    for(int i=1;i<=n;i++)
-    {
-        if(parent[i]==0&&child[i]>=2) check[i]=1;
-    }
-}
-void init()
-{
-	mx=0;
-    cnt=0;
-    for(int i=1;i<=N;i++) List[i].clear();
-    memset(low,0,sizeof(low));
-    memset(num,0,sizeof(num));
-    memset(parent,0,sizeof(parent));
-    memset(add,0,sizeof(add));
-    memset(sc,0,sizeof(sc));
-    memset(check,0,sizeof(check));
-    tmp.clear();
+    return cnt-1;
 }
 void solution()
 {
     cin>>n>>m;
+    for(int i=1;i<=n;i++) List[i].clear();
     for(int i=1;i<=m;i++)
     {
         int x,y;
@@ -63,53 +45,25 @@ void solution()
         List[x].push_back(y);
         List[y].push_back(x);
     }
+    int u=0,d=0;
     for(int i=1;i<=n;i++)
     {
-        if(!num[i]) 
-		{
-			tarjan(i);
-			sotp++;
-		}
+        int s=solve(i);
+        if(s>d)
+        {
+            d=s;
+            u=i;
+        }
     }
-    solve();
+    cout<<u<<endl;
 }
 int main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
     int t;
     cin>>t;
     while(t--)
     {
-    	init();
-    	solution();
-    	for(int i=1;i<=n;i++)
-    	{
-    		if(parent[i]==0&&check[i]) mx=max(mx,sotp+sc[i]-1);
-    		if(parent[i]!=0&&check[i]) mx=max(mx,sotp+add[i]);
-		}
-		if(mx==sotp)
-		{
-			cout<<0<<endl;
-			continue;
-		}
-		else
-		{
-			for(int i=1;i<=n;i++)
-			{
-				if(parent[i]==0&&check[i]&&sotp+sc[i]-1==mx)
-				{
-					cout<<i<<endl;
-					break;
-				}
-				if(parent[i]!=0&&check[i]&&sotp+add[i]==mx)
-				{
-					cout<<i<<endl;
-					break;
-				}
-			}
-		}
-	}
+        solution();
+    }
     return 0;
 }
