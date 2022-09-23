@@ -1,0 +1,92 @@
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+#define db double
+#define fi first
+#define se second
+#define in binary_search
+#define all(a) a.begin(), a.end()
+#define reset(a, val) memset(a, val, sizeof(a));
+#define For(i, a, b) for (int i = a; i <= b; i++)
+#define rFor(i, a, b) for (int i = a; i >= b; i--)
+
+typedef vector<int> v;
+
+const int N = 1e2 + 5;
+
+int n, m, a, b;
+v List[N];
+bool vis[N];
+
+/*𝑴𝒂𝒊𝒏*/
+void init()
+{
+    reset(vis, 0);
+}
+bool BFS(int u)
+{
+    queue<int> q;
+    q.push(u);
+    vis[u] = 1;
+    while (!q.empty())
+    {
+        u = q.front();
+        q.pop();
+        if (u == b)
+            return 0;
+        for (auto x : List[u])
+        {
+            if (!vis[x])
+            {
+                vis[x] = 1;
+                q.push(x);
+            }
+        }
+    }
+    return 1;
+}
+void solution()
+{
+    int cnt = 0;
+    cin >> n >> m >> a >> b;
+    For(i,1,n){
+        List[i].clear();
+    }
+    For(i, 1, m)
+    {
+        int x, y;
+        cin >> x >> y;
+        List[x].push_back(y);
+    }
+    For(i, 1, n)
+    {
+        if (i == a || i == b)
+            continue;
+        reset(vis, 0);
+        vis[i] = 1;
+        if (BFS(a))
+            cnt++;
+        vis[i] = 0;
+    }
+    cout << cnt << endl;
+}
+/**/
+main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    int t = 1;
+    cin >> t;
+    For(i, 1, t)
+    {
+
+        init();
+        solution();
+    }
+    return 0;
+}
